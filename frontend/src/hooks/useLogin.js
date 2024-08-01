@@ -7,9 +7,8 @@ const useLogin = () => {
   const { setAuthUser } = useAuthContext();
 
   const login = async (username, password) => {
-    const success = handleInputErrors({ username, password });
+    const success = handleInputErrors(username, password);
     if (!success) return;
-
     setLoading(true);
     try {
       const res = await fetch("/api/auth/login", {
@@ -22,7 +21,8 @@ const useLogin = () => {
       if (data.error) {
         throw new Error(data.error);
       }
-      localStorage.setItem("anmeetify-user", JSON.stringify(data));
+
+      localStorage.setItem("chat-user", JSON.stringify(data));
       setAuthUser(data);
     } catch (error) {
       toast.error(error.message);
@@ -33,10 +33,9 @@ const useLogin = () => {
 
   return { loading, login };
 };
-
 export default useLogin;
 
-function handleInputErrors({ username, password }) {
+function handleInputErrors(username, password) {
   if (!username || !password) {
     toast.error("Please fill in all fields");
     return false;

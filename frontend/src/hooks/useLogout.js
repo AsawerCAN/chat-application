@@ -4,8 +4,7 @@ import toast from "react-hot-toast";
 
 const useLogout = () => {
   const [loading, setLoading] = useState(false);
-
-  const [SetAuthUser] = useAuthContext();
+  const { setAuthUser } = useAuthContext();
 
   const logout = async () => {
     setLoading(true);
@@ -19,15 +18,15 @@ const useLogout = () => {
         throw new Error(data.error);
       }
 
-      localStorage.removeItem("anmeetify-user");
-      SetAuthUser(null);
+      localStorage.removeItem("chat-user");
+      setAuthUser(null);
     } catch (error) {
       toast.error(error.message);
     } finally {
       setLoading(false);
     }
   };
+
   return { loading, logout };
 };
-
 export default useLogout;

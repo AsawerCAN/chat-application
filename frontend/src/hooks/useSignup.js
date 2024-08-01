@@ -4,7 +4,7 @@ import { useAuthContext } from "../context/AuthContext";
 
 const useSignup = () => {
   const [loading, setLoading] = useState(false);
-  const [SetAuthUser] = useAuthContext();
+  const { setAuthUser } = useAuthContext();
 
   const signup = async ({
     fullName,
@@ -23,7 +23,6 @@ const useSignup = () => {
     if (!success) return;
 
     setLoading(true);
-
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -41,9 +40,8 @@ const useSignup = () => {
       if (data.error) {
         throw new Error(data.error);
       }
-
-      localStorage.setItem("ammeetify-user", JSON.stringify(data));
-      SetAuthUser(data);
+      localStorage.setItem("chat-user", JSON.stringify(data));
+      setAuthUser(data);
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -53,7 +51,6 @@ const useSignup = () => {
 
   return { loading, signup };
 };
-
 export default useSignup;
 
 function handleInputErrors({
@@ -63,13 +60,13 @@ function handleInputErrors({
   confirmPassword,
   gender,
 }) {
-  if (fullName || username || password || confirmPassword || gender) {
-    toast.error("Please fill in all required fields");
+  if (!fullName || !username || !password || !confirmPassword || !gender) {
+    toast.error("Please fill in all fields");
     return false;
   }
 
   if (password !== confirmPassword) {
-    toast.error("Password does not match");
+    toast.error("Passwords do not match");
     return false;
   }
 
@@ -77,5 +74,6 @@ function handleInputErrors({
     toast.error("Password must be at least 6 characters");
     return false;
   }
+
   return true;
 }
